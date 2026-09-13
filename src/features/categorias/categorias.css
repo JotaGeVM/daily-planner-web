@@ -1,0 +1,75 @@
+.lista-categorias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.categoria-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 16px;
+  min-width: 160px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.categoria-card span {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+.tarefa-nome-lista {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.tarefa-nome-lista:hover {
+  color: var(--accent);
+}
+.tarefa-nome-lista:last-child {
+  border-bottom: none;
+}
+.categoria-info {
+  position: relative;
+  min-width: 320px;
+  max-width: 420px;
+}
+.categoria-info-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-right: 32px;
+}
+.categoria-info-header h3 {
+  flex: 1;
+  font-size: 1.1rem;
+}
+.categoria-info p {
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+.categoria-cor {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1px solid var(--border-color);
+}
+@media (max-width: 640px) {
+  .categoria-card {
+    width: 100%;
+  }
+}
