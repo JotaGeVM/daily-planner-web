@@ -1,122 +1,195 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
-
+import { useState, useEffect } from "react";
+import {
+  getTarefas,
+  deletarTarefa,
+  atualizarTarefa,
+  criarTarefa,
+} from "./features/tarefas/api";
+import {
+  getOcorrencias,
+  criarOcorrencia,
+  deletarOcorrencia,
+} from "./features/ocorrencias/api";
+import ListaTarefas from "./features/tarefas/components/ListarTarefas";
+import ListaCategorias from "./features/categorias/components/ListarCategorias";
+import TarefaForm from "./features/tarefas/components/TarefaForm";
+import TarefaInfo from "./features/tarefas/components/TarefaInfo";
+import "./shared/styles/global.css";
 function App() {
-  const [count, setCount] = useState(0)
+  const [tema, setTema] = useState(
+    () => localStorage.getItem("tema") || "dark",
+  );
+  const [tarefas, setTarefas] = useState([]);
+  const [ocorrencias, setOcorrencias] = useState([]);
+  const [carregandoTarefas, setCarregandoTarefas] = useState(true);
+  const [tarefaEditandoId, setTarefaEditandoId] = useState(null);
+  const [criandoTarefa, setCriandoTarefa] = useState(false);
+  const [tarefaInfoId, setTarefaInfoId] = useState(null);
+  const hoje = new Date().toISOString().split("T")[0];
+  useEffect(() => {
+    if (tema === "light") {
+      document.body.setAttribute("data-theme", "light");
+    } else {
+      document.body.removeAttribute("data-theme");
+    }
+    localStorage.setItem("tema", tema);
+  }, [tema]);
+  useEffect(() => {
+    getTarefas()
+      .then((dados) => {
+        setTarefas(dados);
+        setCarregandoTarefas(false);
+      })
+      .catch((erro) => {
+        console.error("Erro ao buscar tarefas:", erro);
+        setCarregandoTarefas(false);
+      });
+  }, []);
+  useEffect(() => {
+    getOcorrencias()
+      .then(setOcorrencias)
+      .catch((erro) => console.error("Erro ao buscar ocorrências:", erro));
+  }, []);
+  function handleToggleTema() {
+    setTema((atual) => (atual === "dark" ? "light" : "dark"));
+  }
+  function handleDeletarTarefa(id) {
+    deletarTarefa(id)
+      .then(() => {
+        setTarefas((atuais) => atuais.filter((tarefa) => tarefa.id !== id));
+      })
+      .catch((erro) => console.error("Erro ao deletar tarefa:", erro));
+  }
+  function handleIniciarEdicaoTarefa(id) {
+    setTarefaInfoId(null);
+    setTarefaEditandoId(id);
+  }
+  function fecharModalTarefa() {
+    const idEditado = tarefaEditandoId;
+    setTarefaEditandoId(null);
+    setCriandoTarefa(false);
+
+    if (idEditado) {
+      setTarefaInfoId(idEditado);
+    }
+  }
+  function handleSalvarTarefa(id, dados) {
+    if (id) {
+      return atualizarTarefa(id, dados).then((tarefaAtualizada) => {
+        setTarefas((atuais) =>
+          atuais.map((tarefa) =>
+            tarefa.id === id ? tarefaAtualizada : tarefa,
+          ),
+        );
+        fecharModalTarefa();
+      });
+    } else {
+      return criarTarefa(dados).then((novaTarefa) => {
+        setTarefas((atuais) => [...atuais, novaTarefa]);
+        fecharModalTarefa();
+      });
+    }
+  }
+
+  function handleCriarOcorrencia(tarefaId) {
+    criarOcorrencia({
+      tarefaId,
+      dataHora: new Date().toISOString().slice(0, 19),
+    })
+      .then((novaOcorrencia) => {
+        setOcorrencias((atuais) => [...atuais, novaOcorrencia]);
+      })
+      .catch((erro) => console.error("Erro ao criar ocorrência:", erro));
+  }
+
+  function handleDeletarOcorrencia(id) {
+    deletarOcorrencia(id)
+      .then(() => {
+        setOcorrencias((atuais) => atuais.filter((o) => o.id !== id));
+      })
+      .catch((erro) => console.error("Erro ao deletar ocorrência:", erro));
+  }
+
+  function handleAbrirTarefaInfo(id) {
+    setTarefaInfoId(id);
+  }
+
+  function handleFecharTarefaInfo() {
+    setTarefaInfoId(null);
+  }
+
+  function handleEditarDaInfo() {
+    const id = tarefaInfoId;
+    handleFecharTarefaInfo();
+    handleIniciarEdicaoTarefa(id);
+  }
+
+  const tarefaSelecionada = tarefas.find(
+    (tarefa) => tarefa.id === tarefaEditandoId,
+  );
+  const modalTarefaAberto = criandoTarefa || tarefaEditandoId !== null;
+  const tarefaParaForm = criandoTarefa ? null : tarefaSelecionada;
+  const tarefaParaInfo = tarefas.find((tarefa) => tarefa.id === tarefaInfoId);
+  const ocorrenciasDaTarefaInfo = ocorrencias.filter(
+    (o) => o.tarefaId === tarefaInfoId,
+  );
 
   return (
     <>
+      <button className="theme-toggle" onClick={handleToggleTema}>
+        {tema === "dark" ? "☀️ Tema Claro" : "🌙 Tema Escuro"}
+      </button>
       <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+        <div className="secao">
+          <h2>Tarefas</h2>
+          <ListaTarefas
+            tarefas={tarefas}
+            ocorrencias={ocorrencias}
+            carregando={carregandoTarefas}
+            hoje={hoje}
+            onDeletar={handleDeletarTarefa}
+            onCriarOcorrencia={handleCriarOcorrencia}
+            onDeletarOcorrencia={handleDeletarOcorrencia}
+            onAbrirInfo={handleAbrirTarefaInfo}
+            onCriandoTarefa={() => setCriandoTarefa(true)}
+          />
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
+        <div className="secao">
+          <h2>Categorias</h2>
+          <ListaCategorias
+            tarefas={tarefas}
+            onAbrirTarefaInfo={handleAbrirTarefaInfo}
+          />
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+      </section>
+      {modalTarefaAberto && (
+        <div
+          className="modal-overlay"
+          onClick={(evento) => {
+            if (evento.target === evento.currentTarget) {
+              fecharModalTarefa();
+            }
+          }}
         >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+          <div className="modal-conteudo">
+            <TarefaForm
+              tarefa={tarefaParaForm}
+              onSalvar={handleSalvarTarefa}
+              onCancelar={fecharModalTarefa}
+            />
+          </div>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      )}
+      {tarefaInfoId !== null && tarefaParaInfo && (
+        <TarefaInfo
+          tarefa={tarefaParaInfo}
+          ocorrenciasTarefa={ocorrenciasDaTarefaInfo}
+          onEditar={handleEditarDaInfo}
+          onDeletarOcorrencia={handleDeletarOcorrencia}
+          onFechar={handleFecharTarefaInfo}
+        />
+      )}
     </>
-  )
+  );
 }
-
-export default App
+export default App;
