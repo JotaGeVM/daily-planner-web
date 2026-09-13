@@ -1,0 +1,37 @@
+.lista-ocorrencias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.ocorrencia-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.btn-concluida {
+  background-color: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+.btn-concluida:hover {
+  opacity: 0.85;
+}
+.btn-pendente {
+  background-color: transparent;
+  border-color: var(--warning);
+  color: var(--warning);
+}
+.btn-pendente:hover {
+  background-color: var(--warning);
+  color: white;
+}
+@media (max-width: 640px) {
+  .ocorrencia-card {
+    width: 100%;
+  }
+}
