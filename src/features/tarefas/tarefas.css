@@ -1,0 +1,47 @@
+.lista-tarefas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.tarefa-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 16px;
+  width: 260px;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.tarefa-card h3 {
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+.tarefa-card p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+.tarefa-card > span {
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+tarefa-card .card-acoes {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.modal-conteudo form {
+  display: flex;
+  flex-direction: column;
+  min-width: 280px;
+}
+.modal-conteudo .card-acoes {
+  margin-top: 16px;
+}
+@media (max-width: 640px) {
+  .tarefa-card {
+    width: 100%;
+  }
+}
