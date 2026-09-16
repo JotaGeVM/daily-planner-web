@@ -1,7 +1,7 @@
 import { apiClient } from "../../shared/api/client";
 
 export function getOcorrencias() {
-  return apiClient("/ocorrencias");
+  return apiClient("/ocorrencias").then((pagina) => pagina.content);
 }
 
 export function criarOcorrencia(ocorrencia) {

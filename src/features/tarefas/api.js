@@ -1,7 +1,7 @@
 import { apiClient } from "../../shared/api/client";
 
 export function getTarefas() {
-  return apiClient("/tarefas");
+  return apiClient("/tarefas").then((pagina) => pagina.content);
 }
 
 export function criarTarefa(dadosTarefa) {

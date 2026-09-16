@@ -1,7 +1,7 @@
 import { apiClient } from "../../shared/api/client";
 
 export function getCategorias() {
-  return apiClient("/categorias");
+  return apiClient("/categorias").then((pagina) => pagina.content);
 }
 
 export function criarCategoria(categoria) {
