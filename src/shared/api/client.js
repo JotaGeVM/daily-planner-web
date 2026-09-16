@@ -1,3 +1,5 @@
+import { getToken } from "../auth/authStorage";
+
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 class ApiError extends Error {
@@ -10,9 +12,15 @@ class ApiError extends Error {
 }
 
 export async function apiClient(endpoint, options = {}) {
+  const token = getToken();
+  const headers = { "Content-Type": "application/json", ...options.headers };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
   const response = await fetch(`${BASE_URL}${endpoint}`, {
-    headers: { "Content-Type": "application/json" },
     ...options,
+    headers,
   });
   if (!response.ok) {
     let mensagem = `Erro ${response.status}: ${response.statusText}`;

@@ -14,11 +14,15 @@ import ListaTarefas from "./features/tarefas/components/ListarTarefas";
 import ListaCategorias from "./features/categorias/components/ListarCategorias";
 import TarefaForm from "./features/tarefas/components/TarefaForm";
 import TarefaInfo from "./features/tarefas/components/TarefaInfo";
+import AuthForm from "./features/auth/components/AuthForm";
+import { getToken, setToken, clearToken } from "./shared/auth/authStorage";
 import "./shared/styles/global.css";
+
 function App() {
   const [tema, setTema] = useState(
     () => localStorage.getItem("tema") || "dark",
   );
+  const [autenticado, setAutenticado] = useState(() => Boolean(getToken()));
   const [tarefas, setTarefas] = useState([]);
   const [ocorrencias, setOcorrencias] = useState([]);
   const [carregandoTarefas, setCarregandoTarefas] = useState(true);
@@ -26,6 +30,7 @@ function App() {
   const [criandoTarefa, setCriandoTarefa] = useState(false);
   const [tarefaInfoId, setTarefaInfoId] = useState(null);
   const hoje = new Date().toISOString().split("T")[0];
+
   useEffect(() => {
     if (tema === "light") {
       document.body.setAttribute("data-theme", "light");
@@ -34,7 +39,9 @@ function App() {
     }
     localStorage.setItem("tema", tema);
   }, [tema]);
+
   useEffect(() => {
+    if (!autenticado) return;
     getTarefas()
       .then((dados) => {
         setTarefas(dados);
@@ -43,13 +50,31 @@ function App() {
       .catch((erro) => {
         console.error("Erro ao buscar tarefas:", erro);
         setCarregandoTarefas(false);
+        if (erro.status === 401 || erro.status === 403) {
+          handleLogout();
+        }
       });
-  }, []);
+  }, [autenticado]);
+
   useEffect(() => {
+    if (!autenticado) return;
     getOcorrencias()
       .then(setOcorrencias)
       .catch((erro) => console.error("Erro ao buscar ocorrências:", erro));
-  }, []);
+  }, [autenticado]);
+
+  function handleAutenticado(token) {
+    setToken(token);
+    setAutenticado(true);
+  }
+
+  function handleLogout() {
+    clearToken();
+    setAutenticado(false);
+    setTarefas([]);
+    setOcorrencias([]);
+  }
+
   function handleToggleTema() {
     setTema((atual) => (atual === "dark" ? "light" : "dark"));
   }
@@ -134,11 +159,20 @@ function App() {
     (o) => o.tarefaId === tarefaInfoId,
   );
 
+  if (!autenticado) {
+    return <AuthForm onAutenticado={handleAutenticado} />;
+  }
+
   return (
     <>
-      <button className="theme-toggle" onClick={handleToggleTema}>
-        {tema === "dark" ? "☀️ Tema Claro" : "🌙 Tema Escuro"}
-      </button>
+      <div className="topo-acoes">
+        <button className="theme-toggle" onClick={handleToggleTema}>
+          {tema === "dark" ? "☀️ Tema Claro" : "🌙 Tema Escuro"}
+        </button>
+        <button className="btn-logout" onClick={handleLogout}>
+          Sair
+        </button>
+      </div>
       <section id="center">
         <div className="secao">
           <h2>Tarefas</h2>
