@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import {
   getTarefas,
   deletarTarefa,
@@ -10,11 +11,8 @@ import {
   criarOcorrencia,
   deletarOcorrencia,
 } from "./features/ocorrencias/api";
-import ListaTarefas from "./features/tarefas/components/ListarTarefas";
-import ListaCategorias from "./features/categorias/components/ListarCategorias";
-import TarefaForm from "./features/tarefas/components/TarefaForm";
-import TarefaInfo from "./features/tarefas/components/TarefaInfo";
 import AuthForm from "./features/auth/components/AuthForm";
+import TarefasPage from "./pages/TarefasPage";
 import { getToken, setToken, clearToken } from "./shared/auth/authStorage";
 import "./shared/styles/global.css";
 
@@ -173,56 +171,34 @@ function App() {
           Sair
         </button>
       </div>
-      <section id="center">
-        <div className="secao">
-          <h2>Tarefas</h2>
-          <ListaTarefas
-            tarefas={tarefas}
-            ocorrencias={ocorrencias}
-            carregando={carregandoTarefas}
-            hoje={hoje}
-            onDeletar={handleDeletarTarefa}
-            onCriarOcorrencia={handleCriarOcorrencia}
-            onDeletarOcorrencia={handleDeletarOcorrencia}
-            onAbrirInfo={handleAbrirTarefaInfo}
-            onCriandoTarefa={() => setCriandoTarefa(true)}
-          />
-        </div>
-        <div className="secao">
-          <h2>Categorias</h2>
-          <ListaCategorias
-            tarefas={tarefas}
-            onAbrirTarefaInfo={handleAbrirTarefaInfo}
-          />
-        </div>
-      </section>
-      {modalTarefaAberto && (
-        <div
-          className="modal-overlay"
-          onClick={(evento) => {
-            if (evento.target === evento.currentTarget) {
-              fecharModalTarefa();
-            }
-          }}
-        >
-          <div className="modal-conteudo">
-            <TarefaForm
-              tarefa={tarefaParaForm}
-              onSalvar={handleSalvarTarefa}
-              onCancelar={fecharModalTarefa}
+      <Routes>
+        <Route
+          path="/tarefas"
+          element={
+            <TarefasPage
+              tarefas={tarefas}
+              ocorrencias={ocorrencias}
+              carregandoTarefas={carregandoTarefas}
+              hoje={hoje}
+              onDeletarTarefa={handleDeletarTarefa}
+              onCriarOcorrencia={handleCriarOcorrencia}
+              onDeletarOcorrencia={handleDeletarOcorrencia}
+              onAbrirTarefaInfo={handleAbrirTarefaInfo}
+              onCriandoTarefa={() => setCriandoTarefa(true)}
+              modalTarefaAberto={modalTarefaAberto}
+              tarefaParaForm={tarefaParaForm}
+              onSalvarTarefa={handleSalvarTarefa}
+              fecharModalTarefa={fecharModalTarefa}
+              tarefaInfoId={tarefaInfoId}
+              tarefaParaInfo={tarefaParaInfo}
+              ocorrenciasDaTarefaInfo={ocorrenciasDaTarefaInfo}
+              onEditarDaInfo={handleEditarDaInfo}
+              onFecharTarefaInfo={handleFecharTarefaInfo}
             />
-          </div>
-        </div>
-      )}
-      {tarefaInfoId !== null && tarefaParaInfo && (
-        <TarefaInfo
-          tarefa={tarefaParaInfo}
-          ocorrenciasTarefa={ocorrenciasDaTarefaInfo}
-          onEditar={handleEditarDaInfo}
-          onDeletarOcorrencia={handleDeletarOcorrencia}
-          onFechar={handleFecharTarefaInfo}
+          }
         />
-      )}
+        <Route path="*" element={<Navigate to="/tarefas" replace />} />
+      </Routes>
     </>
   );
 }
