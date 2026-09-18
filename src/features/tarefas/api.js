@@ -25,3 +25,7 @@ export function deletarTarefa(id) {
 export function getStreak(id) {
   return apiClient(`/tarefas/${id}/streak`);
 }
+
+export function getCalendario(inicio, fim) {
+  return apiClient(`/tarefas/calendario?inicio=${inicio}&fim=${fim}`);
+}

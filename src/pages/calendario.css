@@ -1,0 +1,77 @@
+.calendario-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.calendario-navegacao {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.calendario-navegacao button {
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  cursor: pointer;
+}
+
+.semana-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .semana-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.semana-dia {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 8px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.semana-dia-hoje {
+  border-color: var(--accent);
+  border-width: 2px;
+}
+
+.semana-dia-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.semana-dia-vazio {
+  color: var(--text-secondary, gray);
+  font-size: 0.8rem;
+  text-align: center;
+}
+
+.semana-tarefa-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 6px;
+  border-left: 3px solid var(--accent);
+  background-color: var(--bg-secondary);
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.semana-tarefa-hora {
+  font-size: 0.7rem;
+  color: var(--text-secondary, gray);
+}

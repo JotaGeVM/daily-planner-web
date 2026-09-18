@@ -15,6 +15,9 @@ import AuthForm from "./features/auth/components/AuthForm";
 import TarefasPage from "./pages/TarefasPage";
 import { getToken, setToken, clearToken } from "./shared/auth/authStorage";
 import "./shared/styles/global.css";
+import NavBar from "./shared/components/NavBar";
+import SemanaPage from "./pages/SemanaPage";
+import MesPage from "./pages/MesPage";
 
 function App() {
   const [tema, setTema] = useState(
@@ -164,6 +167,7 @@ function App() {
   return (
     <>
       <div className="topo-acoes">
+        <NavBar />
         <button className="theme-toggle" onClick={handleToggleTema}>
           {tema === "dark" ? "☀️ Tema Claro" : "🌙 Tema Escuro"}
         </button>
@@ -197,6 +201,8 @@ function App() {
             />
           }
         />
+        <Route path="/semana" element={<SemanaPage />} />
+        <Route path="/mes" element={<MesPage />} />
         <Route path="*" element={<Navigate to="/tarefas" replace />} />
       </Routes>
     </>

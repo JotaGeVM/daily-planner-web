@@ -235,6 +235,23 @@ button:hover {
   margin-bottom: 12px;
   font-size: 0.875rem;
 }
+.nav-bar {
+  display: flex;
+  gap: 16px;
+  margin-right: auto;
+}
+
+.nav-bar a {
+  color: var(--text-secondary, inherit);
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: var(--radius);
+}
+
+.nav-bar a.nav-ativo {
+  background-color: var(--accent);
+  color: white;
+}
 @media (max-width: 640px) {
   #center {
     padding: 16px 12px;
