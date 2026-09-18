@@ -75,3 +75,75 @@
   font-size: 0.7rem;
   color: var(--text-secondary, gray);
 }
+
+.mes-titulo {
+  text-align: center;
+}
+
+.mes-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.mes-cabecalho-dia {
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding-bottom: 4px;
+}
+
+.mes-dia {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 4px;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mes-dia-fora {
+  opacity: 0.4;
+}
+
+.mes-dia-hoje {
+  border-color: var(--accent);
+  border-width: 2px;
+}
+
+.mes-dia-numero {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.mes-dia-tarefas {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mes-tarefa-item {
+  font-size: 0.7rem;
+  padding: 1px 4px;
+  border-left: 2px solid var(--accent);
+  background-color: var(--bg-secondary);
+  border-radius: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mes-tarefa-mais {
+  font-size: 0.65rem;
+  color: var(--text-secondary, gray);
+}
+
+@media (max-width: 700px) {
+  .mes-dia-tarefas {
+    display: none;
+  }
+  .mes-dia {
+    min-height: 36px;
+  }
+}
