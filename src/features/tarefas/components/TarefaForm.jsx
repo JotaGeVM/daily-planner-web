@@ -12,6 +12,7 @@ function TarefaForm({ tarefa, onSalvar, onCancelar }) {
     horaInicio: tarefa?.horaInicio ?? "",
     duracao: tarefa?.duracao ?? "",
     metaDiaria: tarefa?.metaDiaria ?? "",
+    dataInicio: tarefa?.dataInicio ?? "",
   });
   const [categorias, setCategorias] = useState([]);
 
@@ -30,6 +31,8 @@ function TarefaForm({ tarefa, onSalvar, onCancelar }) {
       novosErros.recorrencia = "Selecione a recorrência.";
     if (formData.tipo === "HABITO" && !formData.metaDiaria)
       novosErros.metaDiaria = "Meta diária é obrigatória para hábitos.";
+    if (!formData.dataInicio)
+      novosErros.dataInicio = "Data de início é obrigatória.";
     return novosErros;
   }
   useEffect(() => {
@@ -145,6 +148,19 @@ function TarefaForm({ tarefa, onSalvar, onCancelar }) {
           )}
         </label>
       )}
+      <label>
+        Data de Início
+        <input
+          type="date"
+          name="dataInicio"
+          value={formData.dataInicio}
+          onChange={handleChange}
+          autoComplete="off"
+        />
+        {erros.dataInicio && (
+          <span className="erro-campo">{erros.dataInicio}</span>
+        )}
+      </label>
       <label>
         Recorrência
         <select
