@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react";
 import { getStreak } from "../api";
 
-function StreakCard({ tarefa }) {
+function StreakCard({ tarefa, ocorrenciasCount }) {
   const [streak, setStreak] = useState(null);
 
   useEffect(() => {
     getStreak(tarefa.id)
       .then(setStreak)
       .catch((erro) => console.error("Erro ao buscar streak:", erro));
-  }, [tarefa.id]);
+  }, [tarefa.id, ocorrenciasCount]);
 
   if (!streak) return null;
 

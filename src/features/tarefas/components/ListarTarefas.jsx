@@ -128,7 +128,13 @@ function ListarTarefas({
         {tarefas
           .filter((t) => t.tipo === "HABITO" && t.metaDiaria)
           .map((tarefa) => (
-            <StreakCard key={`streak-${tarefa.id}`} tarefa={tarefa} />
+            <StreakCard
+              key={`streak-${tarefa.id}`}
+              tarefa={tarefa}
+              ocorrenciasCount={
+                ocorrencias.filter((o) => o.tarefaId === tarefa.id).length
+              }
+            />
           ))}
       </div>
 
