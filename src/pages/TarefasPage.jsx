@@ -22,12 +22,13 @@ function TarefasPage({
   ocorrenciasDaTarefaInfo,
   onEditarDaInfo,
   onFecharTarefaInfo,
+  onNaoConfirmarExclusao,
 }) {
   return (
     <>
       <section id="center">
         <div className="secao">
-          <h2>Tarefas</h2>
+          <h2>Hoje</h2>
           <ListaTarefas
             tarefas={tarefas}
             ocorrencias={ocorrencias}
@@ -38,6 +39,7 @@ function TarefasPage({
             onDeletarOcorrencia={onDeletarOcorrencia}
             onAbrirInfo={onAbrirTarefaInfo}
             onCriandoTarefa={onCriandoTarefa}
+            onNaoConfirmarExclusao={onNaoConfirmarExclusao}
           />
         </div>
         <div className="secao">

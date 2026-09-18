@@ -21,3 +21,7 @@ export function atualizarTarefa(id, dadosTarefa) {
 export function deletarTarefa(id) {
   return apiClient(`/tarefas/${id}`, { method: "DELETE" });
 }
+
+export function getStreak(id) {
+  return apiClient(`/tarefas/${id}/streak`);
+}

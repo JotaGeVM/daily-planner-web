@@ -11,6 +11,7 @@ function TarefaForm({ tarefa, onSalvar, onCancelar }) {
     diasSemana: tarefa?.diasSemana ?? "",
     horaInicio: tarefa?.horaInicio ?? "",
     duracao: tarefa?.duracao ?? "",
+    metaDiaria: tarefa?.metaDiaria ?? "",
   });
   const [categorias, setCategorias] = useState([]);
 
@@ -27,6 +28,8 @@ function TarefaForm({ tarefa, onSalvar, onCancelar }) {
     if (!formData.tipo) novosErros.tipo = "Selecione o tipo.";
     if (!formData.recorrencia)
       novosErros.recorrencia = "Selecione a recorrência.";
+    if (formData.tipo === "HABITO" && !formData.metaDiaria)
+      novosErros.metaDiaria = "Meta diária é obrigatória para hábitos.";
     return novosErros;
   }
   useEffect(() => {
@@ -67,7 +70,8 @@ function TarefaForm({ tarefa, onSalvar, onCancelar }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} autoComplete="off">{erroGeral && <p className="erro-geral">{erroGeral}</p>}
+    <form onSubmit={handleSubmit} autoComplete="off">
+      {erroGeral && <p className="erro-geral">{erroGeral}</p>}
       <label>
         Nome
         <input
@@ -121,9 +125,26 @@ function TarefaForm({ tarefa, onSalvar, onCancelar }) {
           </option>
           <option value="EVENTO">Evento</option>
           <option value="TAREFA">Tarefa</option>
+          <option value="HABITO">Hábito</option>
         </select>
         {erros.tipo && <span className="erro-campo">{erros.tipo}</span>}
       </label>
+      {formData.tipo === "HABITO" && (
+        <label>
+          Meta Diária (quantas vezes por dia)
+          <input
+            type="number"
+            name="metaDiaria"
+            min="1"
+            value={formData.metaDiaria}
+            onChange={handleChange}
+            autoComplete="off"
+          />
+          {erros.metaDiaria && (
+            <span className="erro-campo">{erros.metaDiaria}</span>
+          )}
+        </label>
+      )}
       <label>
         Recorrência
         <select
